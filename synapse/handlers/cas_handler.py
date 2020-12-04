@@ -41,6 +41,7 @@ class CasHandler:
     def __init__(self, hs: "HomeServer"):
         self.hs = hs
         self._hostname = hs.hostname
+        self._store = hs.get_datastore()
         self._auth_handler = hs.get_auth_handler()
         self._registration_handler = hs.get_registration_handler()
 
@@ -282,7 +283,7 @@ class CasHandler:
                 "Looking for existing account based on mapped %s", user_id,
             )
 
-            users = await self.store.get_users_by_id_case_insensitive(user_id)
+            users = await self._store.get_users_by_id_case_insensitive(user_id)
             if users:
                 registered_user_id = list(users.keys())[0]
                 logger.info("Grandfathering mapping to %s", registered_user_id)
