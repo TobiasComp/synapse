@@ -20,7 +20,6 @@ from xml.etree import ElementTree as ET
 from twisted.web.client import PartialDownloadError
 
 from synapse.api.errors import Codes, LoginError
-from synapse.handlers._base import BaseHandler
 from synapse.handlers.sso import MappingException, UserAttributes
 from synapse.http.site import SynapseRequest
 from synapse.types import UserID, map_username_to_mxid_localpart
@@ -31,7 +30,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class CasHandler(BaseHandler):
+class CasHandler:
     """
     Utility class for to handle the response from a CAS SSO service.
 
@@ -40,7 +39,8 @@ class CasHandler(BaseHandler):
     """
 
     def __init__(self, hs: "HomeServer"):
-        super().__init__(hs)
+        self.hs = hs
+        self._hostname = hs.hostname
         self._auth_handler = hs.get_auth_handler()
         self._registration_handler = hs.get_registration_handler()
 
@@ -275,7 +275,7 @@ class CasHandler(BaseHandler):
             # Since CAS did not used to support storing data into the user_external_ids
             # tables, we need to attempt to map to existing users.
             user_id = UserID(
-                map_username_to_mxid_localpart(remote_user_id), self.server_name
+                map_username_to_mxid_localpart(remote_user_id), self._hostname
             ).to_string()
 
             logger.debug(
