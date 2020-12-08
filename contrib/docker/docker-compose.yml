@@ -13,6 +13,7 @@ services:
     ports:
     - 80:80
     - 443:443
+
     restart: always
     # depends_on:
     #   - web
@@ -77,5 +78,6 @@ services:
       - ./schemas:/var/lib/postgresql/data
       # .. or store them on some high performance storage for better results
       # - /path/to/ssd/storage:/var/lib/postgresql/data
+      
     ports: 
       - 5432:5432
